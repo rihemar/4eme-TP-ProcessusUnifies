@@ -83,29 +83,6 @@ Each use case is scored from 1 to 5 on three criteria:
 
 ---
 
-## 5. The Four Milestones Explained
-
-Each milestone marks the end of a UP phase and is a checkpoint where the team and stakeholders decide whether the project is ready to move on.
-
-| Milestone | Full name | Ends phase | The question it answers |
-|---|---|---|---|
-| **LCO** | Life Cycle Objectives (*objectifs du cycle de vie*) | Inception | Is this project worth doing, and is the scope clear? |
-| **LCA** | Life Cycle Architecture (*architecture du cycle de vie*) | Elaboration | Does the architecture hold up, and have the major risks been resolved? |
-| **IOC** | Initial Operational Capability (*capacité opérationnelle initiale*) | Construction | Is the system complete enough to be tested by real users (beta)? |
-| **PD** | Product Release (*livraison du produit*) | Transition | Is the product ready to be delivered and used for real? |
-
-*Some course materials write the last one as **PR** (Product Release). Use whichever abbreviation your instructor uses.*
-
-### What to show at each milestone in this project
-
-- **LCO:** the vision, the actor list, the UC list, the risk list, and a rough plan. Nothing is built yet.
-- **LCA:** a working skeleton where the risky parts are proven. Seat booking handles two simultaneous requests correctly, and a payment works against the gateway's test mode.
-- **IOC:** all core UCs work end to end (book, pay, notify), even if some details are rough.
-- **PD:** tested with real students, bugs fixed, deployed, and documented.
-
-The most important one is **LCA**. If the architecture and the riskiest UCs are validated there, the rest of the project is much safer, which is why UC3 and UC4 sit in iteration 1.
-
----
 
 ## 6. Risk Table
 
@@ -117,15 +94,3 @@ The most important one is **LCA**. If the architecture and the riskiest UCs are 
 | Fake accounts or unsafe rides | University-email verification, ratings, report button |
 
 ---
-
-## 7. Other System Ideas (alternatives)
-
-| System | Technical-risk use case |
-|---|---|
-| Sports court booking (padel, football) | Booking conflicts, payment |
-| Medical appointment booking | Slot conflicts, SMS reminders |
-| Room booking (university, coworking) | Conflicts, recurring reservations |
-| Food ordering / click & collect | Online payment, status notifications |
-| Event ticketing | High concurrency on the last tickets, payment |
-| Online library | Book reservation, overdue alerts |
-| Bike / scooter rental | Payment, real-time availability |
