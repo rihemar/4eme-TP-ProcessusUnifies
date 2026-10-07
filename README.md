@@ -74,10 +74,10 @@ Each use case is scored from 1 to 5 on three criteria:
 
 | Iteration | Phase | Content | Milestone |
 |---|---|---|---|
-| **Pre-iteration (week 1)** | Inception | Vision, actors, UC list, risk list, prioritization, rough plan | **LCO:** scope and vision validated |
-| **Iteration 1 (weeks 2-4)** | Elaboration | Architecture (database, API, authentication). UC1 minimal (university-email signup). UC2 basic. **UC3 with atomic seat reservation** (transaction or row lock, tested with concurrent requests). **UC4 prototype** against the gateway's test mode. | **LCA:** architecture stable, top 2 risks retired |
-| **Iteration 2 (weeks 5-7)** | Construction | UC4 complete (payment confirmation, failure handling, refund on cancellation). UC5 (asynchronous notification queue with retries). UC1 and UC2 completed (recurring rides, profile). | **IOC:** beta, all core UCs working |
-| **Iteration 3 (weeks 8-9)** | Transition | UC6, user testing with real students, bug fixes, deployment, documentation, admin training | **PD:** final release |
+| **Pre-iteration** | Inception | Vision, actors, UC list, risk list, prioritization, rough plan | **LCO:** scope and vision validated |
+| **Iteration 1** | Elaboration | Architecture (database, API, authentication). UC1 minimal (university-email signup). UC2 basic. **UC3 with atomic seat reservation** (transaction or row lock, tested with concurrent requests). **UC4 prototype** against the gateway's test mode. | **LCA:** architecture stable, top 2 risks retired |
+| **Iteration 2 ** | Construction | UC4 complete (payment confirmation, failure handling, refund on cancellation). UC5 (asynchronous notification queue with retries). UC1 and UC2 completed (recurring rides, profile). | **IOC:** beta, all core UCs working |
+| **Iteration 3** | Transition | UC6, user testing with real students, bug fixes, deployment, documentation, admin training | **PD:** final release |
 
 **Why this order works:** the two biggest risks, overbooking and payment, are tackled in iteration 1 and finished in iteration 2. If either causes trouble, you find out around week 4, not week 9.
 
