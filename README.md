@@ -1,6 +1,6 @@
 # 4eme-TP-ProcessusUnifies
 
-# Campus Carpooling: Unified Process Exercise
+## Campus Carpooling:
 
 *Covoiturage universitaire: Processus Unifié (UP)*
 
@@ -39,7 +39,7 @@
 | UC6 | Rate users and moderate reports (admin) | Low |
 
 Six use cases, three of them carrying technical risk.
-
+![use case diagram](use_case_diagram.png)
 ---
 
 ## 3. Prioritization
