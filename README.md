@@ -98,3 +98,24 @@ Each iteration groups use cases and runs through the whole lifecycle (Inception,
 - **By time:** reading a column gives the team's work in a phase, and reading a row shows one iteration maturing from analysis to delivery.
 - **Risk:** overbooking and payment are tackled in Elaboration, so a problem shows up around week 4, not week 9.
 ---
+### 4.3 Phase milestones
+
+Each phase ends with a UP milestone. It is reached only when every iteration has met its own milestone for that phase (see 4.4).
+
+| Phase | Weeks | Milestone | Due | Exit criteria |
+|---|---|---|---|---|
+| **Inception** | 1 | **LCO**: Lifecycle Objectives | End of week 1 | Vision approved. 6 UCs identified and prioritized. Main risks listed (overbooking, double charge, notification delivery). Iteration plan accepted. |
+| **Elaboration** | 2-4 | **LCA**: Lifecycle Architecture | End of week 4 | Executable architecture baseline (database, API, authentication). Top 2 risks retired: UC3 overbooking and UC4 payment. Data model stable, including UC6. |
+| **Construction** | 5-8 | **IOC**: Initial Operational Capability | End of week 8 | All 6 UCs implemented. Integration tests passing. Beta deployable for real users. |
+| **Transition** | 9 | **PD**: Product Release | End of week 9 | User acceptance done. Production gateway configured. Documentation delivered and admin trained. |
+
+### 4.4 Iteration × phase milestones
+
+Each cell is a milestone named **M{iteration}.{phase}**, with a check the team can verify. A phase milestone (4.3) is met when all the milestones in its column are met.
+
+| Iteration | **Inception** (end of week 1) | **Elaboration** (end of week 4) | **Construction** (end of week 8) | **Transition** (end of week 9) |
+|---|---|---|---|---|
+| **I1: UC3, UC1, UC2** | **M1.1:** Main scenarios of UC1, UC2 and UC3 written and validated. Overbooking risk recorded. | **M1.2:** Architecture baseline running. Concurrent booking test passes: N parallel requests for the last seat give exactly 1 booking. **Risk 1 retired.** | **M1.3:** UC1 (verification, profile), UC2 (recurring rides) and UC3 (filters, cancellation) complete. Integration tests green. | **M1.4:** Tested by real students. Blocking bugs fixed. Booking chain deployed. |
+| **I2: UC4, UC5** | **M2.1:** UC4 and UC5 scenarios written. Gateway chosen. Double-charge and delivery risks recorded. | **M2.2:** Payment works in the gateway's test mode and is linked to booking status. A "booking confirmed" notification is delivered through the queue. **Risk 2 retired.** | **M2.3:** Payment is idempotent (a replayed request charges once). Refund on cancellation works. Queue retries and fallback channel work. All notification types are sent. | **M2.4:** End-to-end payment and notification flows tested with students. Production gateway configured. |
+| **I3: UC6** | **M3.1:** Rating and report rules defined. | **M3.2:** Rating and report entities added to the data model (design only). | **M3.3:** Ratings, report handling and admin moderation implemented and tested. | **M3.4:** User tests done. Documentation written. Admin trained. |
+| **Phase milestone** | **LCO** = M1.1 + M2.1 + M3.1 | **LCA** = M1.2 + M2.2 + M3.2 | **IOC** = M1.3 + M2.3 + M3.3 | **PD** = M1.4 + M2.4 + M3.4 |
