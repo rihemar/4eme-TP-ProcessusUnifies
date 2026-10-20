@@ -137,7 +137,6 @@ every box and every class name here exists in the code with the same name.
 
 ![Logical architecture: layers](diagrams/1-architecture-layers.png)
 
-*Source: [`diagrams/1-architecture-layers.mmd`](diagrams/1-architecture-layers.mmd)*
 
 | Layer | Responsibility | Rule |
 |---|---|---|
@@ -154,7 +153,6 @@ Designed now, built later (I2 and I3, per the plan): `Payment`, `Rating`, `Repor
 
 ![Domain model](diagrams/2-domain-class-diagram.png)
 
-*Source: [`diagrams/2-domain-class-diagram.mmd`](diagrams/2-domain-class-diagram.mmd)*
 
 **Invariant (the UC3 risk):** `0 <= Ride.seatsAvailable <= Ride.totalSeats`, and the number of
 `CONFIRMED` bookings of a ride is `totalSeats - seatsAvailable`. A passenger cannot book the same ride twice
@@ -170,7 +168,7 @@ seat cannot both get `1 row affected`.
 
 ![UC3 Book a seat: sequence](diagrams/3-uc3-book-seat-sequence.png)
 
-*Source: [`diagrams/3-uc3-book-seat-sequence.mmd`](diagrams/3-uc3-book-seat-sequence.mmd)*
+
 
 Other error cases: unknown ride or student → `404`; same passenger books twice → `409`.
 
