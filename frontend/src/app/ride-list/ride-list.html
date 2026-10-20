@@ -1,0 +1,32 @@
+<label class="as">
+  Acting as passenger
+  <select [(ngModel)]="passengerId">
+    @for (p of passengers; track p.id) {
+      <option [ngValue]="p.id">{{ p.name }}</option>
+    }
+  </select>
+</label>
+
+@if (message(); as m) {
+  <p class="msg" [class.ok]="m.ok" [class.err]="!m.ok">{{ m.text }}</p>
+}
+
+<ul class="rides">
+  @for (ride of rides(); track ride.id) {
+    <li>
+      <div>
+        <strong>{{ ride.origin }} → {{ ride.destination }}</strong>
+        <span class="meta">
+          {{ ride.departureAt | date: 'EEE d MMM, HH:mm' }} · driver {{ ride.driver.fullName }} ·
+          {{ ride.pricePerSeat }} TND
+        </span>
+      </div>
+      <span class="seats">{{ ride.seatsAvailable }}/{{ ride.totalSeats }} seats</span>
+      <button (click)="book(ride)" [disabled]="ride.seatsAvailable === 0">
+        {{ ride.seatsAvailable === 0 ? 'Full' : 'Book' }}
+      </button>
+    </li>
+  } @empty {
+    <li class="empty">No rides yet.</li>
+  }
+</ul>
