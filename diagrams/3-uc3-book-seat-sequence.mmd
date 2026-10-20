@@ -1,0 +1,29 @@
+sequenceDiagram
+    actor P as Passenger
+    participant UI as RideListComponent
+    participant API as RideApiService
+    participant C as BookingsController
+    participant S as BookingsService
+    participant DB as Database
+
+    P->>UI: click "Book"
+    UI->>API: book(rideId, passengerId)
+    API->>C: POST /rides/{rideId}/bookings {passengerId}
+    C->>S: bookSeat(rideId, passengerId)
+    S->>DB: BEGIN TRANSACTION
+    S->>DB: SELECT student / ride (exist?)
+    S->>DB: UPDATE ride SET seatsAvailable = seatsAvailable - 1<br/>WHERE id = :rideId AND seatsAvailable > 0
+    alt 1 row affected (a seat was free)
+        S->>DB: INSERT booking (CONFIRMED)
+        S->>DB: COMMIT
+        S-->>C: Booking
+        C-->>API: 201 Created + booking
+        API-->>UI: booking
+        UI-->>P: "Seat booked"
+    else 0 rows affected (ride full)
+        S->>DB: ROLLBACK
+        S-->>C: throw ConflictException
+        C-->>API: 409 Conflict "No seat left"
+        API-->>UI: error
+        UI-->>P: "Ride is full"
+    end

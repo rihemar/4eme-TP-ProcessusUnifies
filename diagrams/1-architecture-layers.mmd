@@ -1,0 +1,35 @@
+flowchart LR
+    subgraph FE["frontend (Angular)"]
+        RL["RideListComponent"]
+        RS["RideApiService<br/>(HttpClient)"]
+        RL --> RS
+    end
+
+    subgraph BE["backend (NestJS)"]
+        direction LR
+        subgraph P["Presentation"]
+            RC["RidesController<br/>GET /rides"]
+            BC["BookingsController<br/>POST /rides/:rideId/bookings"]
+        end
+        subgraph B["Business"]
+            RSV["RidesService"]
+            BSV["BookingsService<br/>bookSeat()"]
+        end
+        subgraph D["Data access (TypeORM)"]
+            RR["Repository#lt;Ride#gt;"]
+            BR["Repository#lt;Booking#gt;"]
+            SR["Repository#lt;Student#gt;"]
+        end
+        RC --> RSV --> RR
+        BC --> BSV --> RR
+        BSV --> BR
+        BSV --> SR
+    end
+
+    DB[("SQLite<br/>(PostgreSQL in production)")]
+
+    RS -- "HTTP / JSON" --> RC
+    RS -- "HTTP / JSON" --> BC
+    RR --> DB
+    BR --> DB
+    SR --> DB

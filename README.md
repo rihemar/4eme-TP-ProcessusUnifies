@@ -121,57 +121,23 @@ Each cell is a milestone named **M{iteration}.{phase}**, with a check the team c
 | **Phase milestone** | **LCO** = M1.1 + M2.1 + M3.1 | **LCA** = M1.2 + M2.2 + M3.2 | **IOC** = M1.3 + M2.3 + M3.3 | **PD** = M1.4 + M2.4 + M3.4 |
 
 ---
-
 # Elaboration: Baseline Architecture (I1, milestone M1.2)
 
 Goal of this baseline: **one end-to-end route that runs** for the riskiest use case,
 **UC3 – Book a seat**, going through every layer (UI → controller → service → data access → database),
 with **an automated test that passes in CI**.
 
-The code in `backend/` and `frontend/` is derived directly from the three diagrams below:
+The diagrams are written in Mermaid (`docs/diagrams/*.mmd`) and exported as PNG so they display in any Markdown viewer.
+The code in `backend/` and `frontend/` is derived directly from them:
 every box and every class name here exists in the code with the same name.
 
 ---
 
 ## 1. Logical architecture (layers)
 
-```mermaid
-flowchart LR
-    subgraph FE["frontend (Angular)"]
-        RL["RideListComponent"]
-        RS["RideApiService<br/>(HttpClient)"]
-        RL --> RS
-    end
+![Logical architecture: layers](diagrams/1-architecture-layers.png)
 
-    subgraph BE["backend (NestJS)"]
-        direction LR
-        subgraph P["Presentation"]
-            RC["RidesController<br/>GET /rides"]
-            BC["BookingsController<br/>POST /rides/:rideId/bookings"]
-        end
-        subgraph B["Business"]
-            RSV["RidesService"]
-            BSV["BookingsService<br/>bookSeat()"]
-        end
-        subgraph D["Data access (TypeORM)"]
-            RR["Repository#lt;Ride#gt;"]
-            BR["Repository#lt;Booking#gt;"]
-            SR["Repository#lt;Student#gt;"]
-        end
-        RC --> RSV --> RR
-        BC --> BSV --> RR
-        BSV --> BR
-        BSV --> SR
-    end
-
-    DB[("SQLite<br/>(PostgreSQL in production)")]
-
-    RS -- "HTTP / JSON" --> RC
-    RS -- "HTTP / JSON" --> BC
-    RR --> DB
-    BR --> DB
-    SR --> DB
-```
+*Source: [`diagrams/1-architecture-layers.mmd`](diagrams/1-architecture-layers.mmd)*
 
 | Layer | Responsibility | Rule |
 |---|---|---|
@@ -186,67 +152,9 @@ flowchart LR
 Implemented in this baseline: `Student`, `Ride`, `Booking`.
 Designed now, built later (I2 and I3, per the plan): `Payment`, `Rating`, `Report`.
 
-```mermaid
-classDiagram
-    direction LR
+![Domain model](diagrams/2-domain-class-diagram.png)
 
-    class Student {
-        +number id
-        +string email
-        +string fullName
-        +boolean verified
-    }
-
-    class Ride {
-        +number id
-        +string origin
-        +string destination
-        +Date departureAt
-        +number totalSeats
-        +number seatsAvailable
-        +number pricePerSeat
-    }
-
-    class Booking {
-        +number id
-        +BookingStatus status
-        +Date createdAt
-    }
-
-    class BookingStatus {
-        <<enumeration>>
-        CONFIRMED
-        CANCELLED
-    }
-
-    class Payment {
-        <<I2 - planned>>
-        +number amount
-        +string gatewayRef
-        +string idempotencyKey
-        +PaymentStatus status
-    }
-
-    class Rating {
-        <<I3 - planned>>
-        +number score
-        +string comment
-    }
-
-    class Report {
-        <<I3 - planned>>
-        +string reason
-        +string status
-    }
-
-    Student "1" --> "0..*" Ride : drives
-    Student "1" --> "0..*" Booking : passenger
-    Ride "1" --> "0..*" Booking : has
-    Booking --> BookingStatus
-    Booking "1" --> "0..1" Payment : paid by
-    Student "1" --> "0..*" Rating : gives
-    Student "1" --> "0..*" Report : files
-```
+*Source: [`diagrams/2-domain-class-diagram.mmd`](diagrams/2-domain-class-diagram.mmd)*
 
 **Invariant (the UC3 risk):** `0 <= Ride.seatsAvailable <= Ride.totalSeats`, and the number of
 `CONFIRMED` bookings of a ride is `totalSeats - seatsAvailable`. A passenger cannot book the same ride twice
@@ -260,37 +168,9 @@ The overbooking risk is removed by a **conditional, atomic update**: the databas
 only if a seat is still free, and tells us how many rows it changed. Two passengers racing for the last
 seat cannot both get `1 row affected`.
 
-```mermaid
-sequenceDiagram
-    actor P as Passenger
-    participant UI as RideListComponent
-    participant API as RideApiService
-    participant C as BookingsController
-    participant S as BookingsService
-    participant DB as Database
+![UC3 Book a seat: sequence](diagrams/3-uc3-book-seat-sequence.png)
 
-    P->>UI: click "Book"
-    UI->>API: book(rideId, passengerId)
-    API->>C: POST /rides/{rideId}/bookings {passengerId}
-    C->>S: bookSeat(rideId, passengerId)
-    S->>DB: BEGIN TRANSACTION
-    S->>DB: SELECT student / ride (exist?)
-    S->>DB: UPDATE ride SET seatsAvailable = seatsAvailable - 1<br/>WHERE id = :rideId AND seatsAvailable > 0
-    alt 1 row affected (a seat was free)
-        S->>DB: INSERT booking (CONFIRMED)
-        S->>DB: COMMIT
-        S-->>C: Booking
-        C-->>API: 201 Created + booking
-        API-->>UI: booking
-        UI-->>P: "Seat booked"
-    else 0 rows affected (ride full)
-        S->>DB: ROLLBACK
-        S-->>C: throw ConflictException
-        C-->>API: 409 Conflict "No seat left"
-        API-->>UI: error
-        UI-->>P: "Ride is full"
-    end
-```
+*Source: [`diagrams/3-uc3-book-seat-sequence.mmd`](diagrams/3-uc3-book-seat-sequence.mmd)*
 
 Other error cases: unknown ride or student → `404`; same passenger books twice → `409`.
 
