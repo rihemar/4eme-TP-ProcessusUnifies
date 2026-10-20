@@ -70,26 +70,31 @@ Each use case is scored from 1 to 5 on three criteria:
 
 ---
 
+
+## 4. Planning: 3 Iterations and the 4 UP Phases
  
-## 4. Planning: 3 Iterations Placed Across the 4 UP Phases
+Each iteration groups use cases and runs through the whole lifecycle (Inception, Elaboration, Construction, Transition). The work on its use cases gets deeper from one phase to the next.
  
-In UP, a **phase** is a stretch of the project that contains one or more **iterations**. Each iteration is a mini-project with its own planning, analysis, design, implementation and testing, and ends with an executable increment.
+### 4.1 Grouping the 6 use cases into 3 iterations
  
-| Phase | Iterations | Weeks | Content | Milestone |
+| Iteration | Use cases (score from section 3) | Total | Why grouped this way |
+|---|---|---|---|
+| **I1: Core booking chain** | **UC3** (15), UC1 (11), UC2 (11) | 37 | UC3 is rank 1. UC1 and UC2 are its prerequisites: with no identity and no ride, there is nothing to book. |
+| **I2: External integrations** | **UC4** (13), UC5 (11) | 24 | UC4 is rank 2. Both UC4 and UC5 depend on external services and are triggered by a booking. |
+| **I3: Trust and moderation** | UC6 (5) | 5 | Lowest rank and lowest risk, so it comes last. |
+ 
+### 4.2 Iterations over the phases
+ 
+| Iteration | **Inception** (week 1) | **Elaboration** (weeks 2-4) | **Construction** (weeks 5-8) | **Transition** (week 9) |
 |---|---|---|---|---|
-| **Inception** | Pre-iteration (I0) | 1 | Vision, actors, UC list, risk list, prioritization, rough plan | **LCO:** scope and vision validated |
-| **Elaboration** | **I1** | 2-4 | Architecture (database, API, authentication). UC1 minimal (university-email signup). UC2 basic. **UC3 with atomic seat reservation** (transaction or row lock, tested with concurrent requests). **UC4 prototype** against the gateway's test mode. | **LCA:** architecture stable, top 2 risks retired |
-| **Construction** | **I2** | 5-6 | UC4 complete (payment confirmation, failure handling, refund on cancellation). UC5 (asynchronous notification queue with retries). | End of I2: risky UCs complete (internal milestone) |
-| | **I3** | 7-8 | UC1 and UC2 completed (recurring rides, profile). UC6 (ratings, report moderation). Integration and system tests. | **IOC:** beta, all core UCs working |
-| **Transition** | Short final stretch (T) | 9 | User testing with real students, bug fixes, deployment, documentation, admin training | **PD:** final release |
+| **I1: UC3, UC1, UC2** | Identify the 3 UCs, write the main scenarios, note the overbooking risk. | Architecture (database, API, authentication). UC1 minimal (university-email signup). UC2 basic. **UC3 with atomic seat reservation**, tested with concurrent requests. | Complete UC1 (verification, profile), UC2 (recurring rides) and UC3 (search filters, cancellation). Integration tests. | User tests with real students, bug fixes, deployment. |
+| **I2: UC4, UC5** | Identify the 2 UCs, the gateway dependency, the double-charge and notification-delivery risks. | **UC4 prototype** in the gateway's test mode, payment tied to booking status. UC5 approach chosen (message queue) with a minimal "booking confirmed" notification. | Complete UC4 (confirmation, failure handling, idempotency, **refund on cancellation**). Complete UC5 (**queue with retries**, fallback channel, all notification types). | Test payment and notification flows with real students, configure the production gateway. |
+| **I3: UC6** | Identify UC6 and the rating and report rules. | Design only: rating and report data in the data model. Nothing built, since the risk is low. | Implement UC6 (ratings, report handling, admin moderation). | User tests, documentation, admin training. |
+| **Milestone** | **LCO:** scope and vision validated | **LCA:** architecture stable, top 2 risks (UC3, UC4) retired | **IOC:** beta, all core UCs working | **PD:** final release |
  
 ### How to read this
  
-- **Inception** is the pre-iteration, and **Transition** is a short final stretch. Neither counts as one of the 3 development iterations.
-- **Elaboration** is I1 alone, because one iteration is enough to retire the two biggest risks.
-- **Construction** is built by two iterations, I2 and I3, and each ends with a working, tested increment. Here several iterations produce one phase.
-- Phase milestones (LCO, LCA, IOC, PD) fall at the end of phases. Iterations end with an executable increment, which is not necessarily a phase milestone.
-**Why this order works:** the two biggest risks, overbooking (UC3) and payment (UC4), are tackled in I1 and finished in I2. If either causes trouble, you find out around week 4, not week 9. UC6 sits in I3 because it is low risk and fits Construction rather than Transition.
- 
+- **By importance:** the highest-ranked UCs (UC3, UC4) are in I1 and I2, and both are built first in Elaboration, while UC6 is delayed to Construction.
+- **By time:** reading a column gives the team's work in a phase, and reading a row shows one iteration maturing from analysis to delivery.
+- **Risk:** overbooking and payment are tackled in Elaboration, so a problem shows up around week 4, not week 9.
 ---
- 
